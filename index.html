@@ -73,7 +73,7 @@
     // ❗ Debug properly using the Console
 
     // 👉 CHALLENGE 1
-    function profileActivation() {
+    function profileActivation(profile, reason) {
       // 🧠 profileActivation takes two arguments, profile and reason, which are an object and a string respectively
       //  The reason arg is only used -and therefore required- to deactivate profiles, not to activate them
       //  The profile arg has an `active` property holding a Boolean value
@@ -85,10 +85,42 @@
       //    * If the profile is active but it has a `reason` prop, return the string "confirm status manually"
       //    * If the profile is **missing** an `active` prop, return the string "impossible to ascertain status"
       // 🌟 HINT: to confirm the existence of a prop, check that its value is not undefined
+  if (profile.hasOwnProperty('active')) {
+    if (profile.active) {
+      if (profile.hasOwnProperty('reason')) {
+        return "confirm status manually";
+      }
+
+      profile.active = false;
+      profile.reason = reason;
+      return profile;
+    } else {
+      if (!profile.hasOwnProperty('reason')) {
+        return "confirm status manually";
+      }
+
+      delete profile.reason;
+      profile.active = true;
+      return profile;
+    }
+  } else {
+    return "impossible to ascertain status";
+  
+}
+
+/*
+const activeProfile = { active: true };
+const inactiveProfile = { active: false, reason: "Inactive for testing" };
+
+console.log(profileActivation(activeProfile, "Deactivation reason"));
+console.log(profileActivation(inactiveProfile));
+console.log(profileActivation({}, "Test reason"));
+*/
+
     }
 
     // 👉 CHALLENGE 2
-    function mineSweeper() {
+    function mineSweeper(grid, x, y) {
       // 🧠 mineSweeper takes a grid as its first argument, and coordinates x and y as the second and third args
       //  The grid is an array of arrays in the following format: [["🟥","🟦","🟥"],["🟦","🟥","🟥"],["🟥","🟦","🟦"]]
       //  Each subarray is a row of the grid, the first subarray being the top row:
@@ -106,10 +138,38 @@
       //    * If the player lands on blue, return the string "🟦 🥳"
       // 🧠 Edge cases:
       //    * If the x or y coordinates are under 1 or over 3, return the string "invalid coordinates"
+  if (x < 1 || x > 3 || y < 1 || y > 3) {
+    return "invalid coordinates";
+  }
+
+  const selectedSquare = grid[y - 1][x - 1];
+
+  if (selectedSquare === "🟥") {
+    return "🟥 💀"; // Red square (mine)
+  } else if (selectedSquare === "🟦") {
+    return "🟦 🥳"; // Blue square (safe)
+  
+}
+
+/* 
+Test cases
+const grid = [
+  ["🟥", "🟦", "🟥"],
+  ["🟦", "🟥", "🟥"],
+  ["🟥", "🟦", "🟦"]
+];
+
+
+console.log(mineSweeper(grid, 1, 1)); // "🟥 💀"
+console.log(mineSweeper(grid, 2, 2)); // "🟥 🥳"
+console.log(mineSweeper(grid, 3, 3)); // "🟦 🥳"
+console.log(mineSweeper(grid, 0, 2)); // "invalid coordinates"
+*/
     }
+    
 
     // 👉 CHALLENGE 3
-    function booleanize() {
+    function booleanize(obj) {
       // 🧠 booleanize takes an object as its single argument, which can have any number of properties
       // Loop over the properties and then return the object, after applying the following transformations:
       //    * If a value is the number zero, it must be transformed into the Boolean false
@@ -118,10 +178,44 @@
       // 🧠 Edge cases:
       //    * If a property name exceeds 9 characters, return the string "shorten all prop names to 9 chars or less"
       // 🌟 HINT: careful not to perform any unintended changes on the object
+  const transformedObj = {};
+
+  for (const prop in obj) {
+    if (prop.length > 9) {
+      return "shorten all prop names to 9 chars or less";
+    }
+
+    const value = obj[prop];
+    if (value === 0) {
+      transformedObj[prop] = false;
+    } else if (value === 1) {
+      transformedObj[prop] = true;
+    } else if (value !== null) {
+      transformedObj[prop] = value;
+    }
+  }
+
+  return transformedObj;
+
+
+/*
+ Test cases
+const inputObj = {
+  prop1: 0,
+  prop2: 1,
+  prop3: null,
+  prop4: "value4",
+  prop5: 5,
+  propWithNameTooLong: "some value"
+};
+
+console.log(booleanize(inputObj));
+*/
+
     }
 
     // 👉 CHALLENGE 4
-    function scrub() {
+    function scrub(text, forbidden) {
       // 🧠 scrub takes a string "text" as its first argument, and an array of forbidden words "forbidden" as its second
       // Any word in the text included in the array of forbidden words is replaced with a word of equal length but made of lowcase "x"
       // The scrubbed text is then returned from the function, as seen in the examples below
@@ -133,10 +227,34 @@
       //    scrub("aces high", ["high", "aces", "hearts"]) // returns "xxxx xxxx"
       //    scrub("", ["high", "aces""]) // returns ""
       // 🌟 HINT: useful array methods to use are `push`, `indexOf`, `split`, `join`
+  const words = text.split(" ");
+  const scrubbedWords = [];
+
+  for (const word of words) {
+    const lowercaseWord = word.toLowerCase();
+    
+    if (forbidden.includes(lowercaseWord)) {
+      scrubbedWords.push("x".repeat(word.length));
+    } else {
+      scrubbedWords.push(word);
+    }
+  
+
+  return scrubbedWords.join(" ");
+}
+
+/*
+ Test cases
+console.log(scrub("out of the silent planet", ["of", "silent"]));  // "out xx the xxxxxx planet"
+console.log(scrub("the ghost of the navigator", ["the"]));         // "xxx ghost of xxx navigator"
+console.log(scrub("lost somewhere in time", []));                  // "lost somewhere in time"
+console.log(scrub("aces high", ["high", "aces", "hearts"]));       // "xxxx xxxx"
+console.log(scrub("", ["high", "aces"]));                          // ""
+*/
     }
 
     // 👉 CHALLENGE 5
-    function normalizePhoneNumber() {
+    function normalizePhoneNumber(number) {
       // 🧠 normalizePhoneNumber takes a string as its only argument, representing a ten-digit number
       // The function returns a string formatted as seen below
       // 🧠 Examples of usage:
@@ -148,7 +266,34 @@
       // 🌟 HINT: instead of looping over the number's digits, loop backwards over a template "(XXX) XXX-XXXX"
       // 🌟 HINT: at each iteration, if the current character is an "X", replace it with the result of popping a digit from the number
       // 🌟 HINT: if you'd rather loop forwards, use `shift` instead of `pop`
-    }
+      //function normalizePhoneNumber(number) {
+  const cleanNumber = number.replace(/\D/g, "");
+
+  if (cleanNumber.length !== 10) {
+    return "type a 10-digit number";
+  }
+
+  if (!/^\d+$/.test(cleanNumber)) {
+    return "invalid phone number";
+  }
+
+  const formattedNumber = `(${cleanNumber.slice(0, 3)}) ${cleanNumber.slice(3, 6)}-${cleanNumber.slice(6)}`;
+
+  return formattedNumber;
+}
+
+// Test cases
+console.log(normalizePhoneNumber("1234567890"));  // "(123) 456-7890"
+console.log(normalizePhoneNumber("1111111111"));  // "(111) 111-1111"
+console.log(normalizePhoneNumber("9876543210"));  // "(987) 654-3210"
+console.log(normalizePhoneNumber("1234567"));     // "type a 10-digit number"
+console.log(normalizePhoneNumber("invalid"));     // "type a 10-digit number"
+console.log(normalizePhoneNumber("12345abcde"));  // "invalid phone number"
+console.log(normalizePhoneNumber("987654321x"));  // "invalid phone number"
+console.log(normalizePhoneNumber("x876543210"));  // "invalid phone number"
+console.log(normalizePhoneNumber("98765x3210"));  // "invalid phone number"
+
+    //}
 
     // 👉 CHALLENGE 6 (bonus, NOT graded)
     function diceRolls() {
@@ -158,6 +303,30 @@
       // 🌟 HINT: research using `Math.random` to obtain a number from 1 to 6
       // 🌟 HINT: use `while(true)` to throw the dice indefinitely, but avoid an infinite loop by making sure to break out eventually
       // 🌟 HINT: you need to keep track of the total number of throws, as well as how many sixes in a row
+     //function diceRolls() {
+  let throws = 0;
+  let consecutiveSixes = 0;
+
+  while (true) {
+    throws++;
+    const roll = Math.floor(Math.random() * 6) + 1;
+
+    if (roll === 6) {
+      consecutiveSixes++;
+      if (consecutiveSixes === 3) {
+        break;
+      }
+    } else {
+      consecutiveSixes = 0;
+    }
+  }
+
+  return throws;
+//}
+
+// Test
+console.log(diceRolls());
+
     }
 
     // 🧪 TESTS, do not make any changes below this line ===================
