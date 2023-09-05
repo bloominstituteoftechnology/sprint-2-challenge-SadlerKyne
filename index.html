@@ -228,29 +228,20 @@ console.log(booleanize(inputObj));
       //    scrub("", ["high", "aces""]) // returns ""
       // 🌟 HINT: useful array methods to use are `push`, `indexOf`, `split`, `join`
   const words = text.split(" ");
-  const scrubbedWords = [];
+  const scrubbedWords = words;
 
   for (const word of words) {
     const lowercaseWord = word.toLowerCase();
     
     if (forbidden.includes(lowercaseWord)) {
-      scrubbedWords.push("x".repeat(word.length));
-    } else {
-      scrubbedWords.push(word);
+      const newWord = "x".repeat(word.length);
+      scrubbedWords.splice(scrubbedWords.indexOf(lowercaseWord), 1, newWord);
+      
     }
+  }
   
 
   return scrubbedWords.join(" ");
-}
-
-/*
- Test cases
-console.log(scrub("out of the silent planet", ["of", "silent"]));  // "out xx the xxxxxx planet"
-console.log(scrub("the ghost of the navigator", ["the"]));         // "xxx ghost of xxx navigator"
-console.log(scrub("lost somewhere in time", []));                  // "lost somewhere in time"
-console.log(scrub("aces high", ["high", "aces", "hearts"]));       // "xxxx xxxx"
-console.log(scrub("", ["high", "aces"]));                          // ""
-*/
     }
 
     // 👉 CHALLENGE 5
@@ -268,14 +259,15 @@ console.log(scrub("", ["high", "aces"]));                          // ""
       // 🌟 HINT: if you'd rather loop forwards, use `shift` instead of `pop`
       //function normalizePhoneNumber(number) {
   const cleanNumber = number.replace(/\D/g, "");
-
+  if (number.includes('x') && number.length==10) {
+    return "invalid phone number";
+  }
   if (cleanNumber.length !== 10) {
     return "type a 10-digit number";
   }
 
-  if (!/^\d+$/.test(cleanNumber)) {
-    return "invalid phone number";
-  }
+  
+  
 
   const formattedNumber = `(${cleanNumber.slice(0, 3)}) ${cleanNumber.slice(3, 6)}-${cleanNumber.slice(6)}`;
 
